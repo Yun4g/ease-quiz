@@ -12,9 +12,9 @@ export default function SignIn() {
   const router = useRouter()
    
   
-  const handleSubmit = (e) => {
+  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
     e.preventDefault();
-    const formData = new FormData(e.target);
+    const formData = new FormData(e.currentTarget);
 
     const data = {
       email: formData.get('email'),
