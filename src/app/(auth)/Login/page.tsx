@@ -1,33 +1,36 @@
 "use client";
 import { useRouter } from 'next/navigation';
 import z from 'zod';
-
+import { FormEvent } from 'react';
 
 const LoginSchema = z.object({
   email: z.string().email('Invalid email address').min(1, 'Email is required'),
   password: z.string().min(6),
 });
 
-export default function SignIn() {
-  const router = useRouter()
-   
-  
-  const handleSubmit = (e: React.FormEvent<HTMLFormElement>) => {
-    e.preventDefault();
-    const formData = new FormData(e.currentTarget);
+type FormData = {
+  email: FormDataEntryValue | null;
+  password: FormDataEntryValue | null;
+};
 
-    const data = {
+export default function SignIn() {
+  const router = useRouter();
+   
+  const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
+    e.preventDefault();
+    const formData = new FormData(e.currentTarget as HTMLFormElement);
+
+    const data: FormData = {
       email: formData.get('email'),
       password: formData.get('password'),
     };
 
     console.log('Form data:', data);
-    router.push('/Dashbord/studentDashboard')
+    
     try {
       LoginSchema.parse(data);
       console.log('Form data is valid:', data);
-     
-      
+      router.push('/Dashbord/studentDashboard');
     } catch (error) {
       console.error('Validation errors:', error);
     }
@@ -56,8 +59,6 @@ export default function SignIn() {
               className="w-full px-3 py-2 border border-green-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="Enter your email"
             />
-             
-
           </div>
 
           <div className="mb-4">
@@ -71,8 +72,6 @@ export default function SignIn() {
               placeholder="Enter your password"
             />
           </div>
-           
-          
        
           <button
             type="submit"
@@ -84,7 +83,7 @@ export default function SignIn() {
 
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
-            Don’t have an account?{" "}
+            Dont have an account?{" "}
             <a href="/SignUp" className="text-green-600 hover:underline">Sign Up</a>
           </p>
         </div>
