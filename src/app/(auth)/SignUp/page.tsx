@@ -1,6 +1,8 @@
 "use client";
 import z from 'zod';
 import React, { FormEvent, useState } from 'react';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 
 
@@ -12,8 +14,9 @@ export default function SignUp() {
         password: z.string().min(6, 'password canot be less than 6'),
         matricNo: z.string().optional(),
     });
-      const [errors, setErrors] =  useState<{ [key: string]: string }>({});
-    const handleSubmit = (e : FormEvent<HTMLFormElement> ) => {
+    const [errors, setErrors] = useState<{ [key: string]: string }>({});
+    const [showPassword, setShowPassword] = useState(false);
+    const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
         const formData = new FormData(form);
@@ -23,7 +26,7 @@ export default function SignUp() {
             email: formData.get('email'),
             password: formData.get('password'),
             matricNo: formData.get('matricNo'),
-            disabilty: formData.get('disability') 
+            disabilty: formData.get('disability')
         };
 
         console.log('Form data:', data);
@@ -92,14 +95,23 @@ export default function SignUp() {
 
                     <div>
                         <label className="block text-sm font-medium mb-1" htmlFor="password">Password</label>
-                        <input
-                            name="password"
-                            type="password"
-                            id="password"
-                            required
-                            className="w-full px-3 py-2 border border-green-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-                            placeholder="Enter your password"
-                        />
+                        <div className="relative">
+                            <input
+                                type={showPassword ? "text" : "password"}
+                                name="password"
+                                id="password"
+                                placeholder="Enter your password"
+                                required
+                                className="w-full px-3 py-2 border border-green-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                            />
+                            <button
+                                type="button"
+                                onClick={() => setShowPassword(!showPassword)}
+                                className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-600"
+                            >
+                                <FontAwesomeIcon icon={showPassword ? faEye  : faEyeSlash } />
+                            </button>
+                        </div>
 
                         {errors.password && (
                             <p className="text-red-500 text-sm mt-1">{errors.password}</p>

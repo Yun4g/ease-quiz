@@ -2,6 +2,8 @@
 import { useRouter } from 'next/navigation';
 import z from 'zod';
 import { FormEvent, useState } from 'react';
+import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
+import { faEye, faEyeSlash } from "@fortawesome/free-solid-svg-icons";
 
 const LoginSchema = z.object({
   email: z.string().email('Invalid email addresss').min(1, 'Email is required'),
@@ -16,6 +18,7 @@ type FormData = {
 export default function SignIn() {
   const router = useRouter();
    const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
+   const [showPassword, setShowPassword] = useState(false);
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
@@ -82,14 +85,23 @@ export default function SignIn() {
 
           <div className="mb-4">
             <label htmlFor="password" className="block text-sm font-medium mb-2">Password</label>
-            <input
-              type="password"
-              id="password"
-              name="password"
-              required
-              className="w-full px-3 py-2 border border-green-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
-              placeholder="Enter your password"
-            />  
+             <div className="relative">
+                                       <input
+                                           type={showPassword ? "text" : "password"}
+                                           name="password"
+                                           id="password"
+                                           placeholder="Enter your password"
+                                           required
+                                           className="w-full px-3 py-2 border border-green-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
+                                       />
+                                       <button
+                                           type="button"
+                                           onClick={() => setShowPassword(!showPassword)}
+                                           className="absolute right-3 top-1/2 transform -translate-y-1/2 text-green-600"
+                                       >
+                                           <FontAwesomeIcon icon={showPassword ? faEye  : faEyeSlash } />
+                                       </button>
+                                   </div> 
             {errors.password && (
               <p className="text-red-500 text-sm mt-1">{errors.password}</p>
             )}
