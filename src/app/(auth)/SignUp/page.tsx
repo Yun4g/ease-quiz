@@ -1,5 +1,7 @@
 "use client";
 import z from 'zod';
+import React, { FormEvent } from 'react';
+
 
 
 
@@ -13,7 +15,8 @@ export default function SignUp() {
 
     const handleSubmit = (e : FormEvent<HTMLFormElement> ) => {
         e.preventDefault();
-        const formData = new FormData(e.target);
+        const form = e.target as HTMLFormElement;
+        const formData = new FormData(form);
 
         const data = {
             role: formData.get('role'),

@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from 'next/navigation';
 import z from 'zod';
-import { FormEvent, useState } from 'react';
+import { FormEvent, } from 'react';
 
 const LoginSchema = z.object({
   email: z.string().email('Invalid email addresss').min(1, 'Email is required'),
@@ -26,7 +26,7 @@ export default function SignIn() {
     };
 
     console.log('Form data:', data);
-  
+    LoginSchema.parse(data);
     
     try {
        
@@ -72,7 +72,7 @@ export default function SignIn() {
               className="w-full px-3 py-2 border border-green-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="Enter your password"
             />  
-           </div>
+          </div>
        
           <button
             type="submit"
