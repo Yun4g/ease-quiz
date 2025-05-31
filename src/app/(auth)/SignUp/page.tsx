@@ -1,6 +1,6 @@
 "use client";
 import z from 'zod';
-import React, { FormEvent } from 'react';
+import React, { FormEvent, useState } from 'react';
 
 
 
@@ -12,7 +12,7 @@ export default function SignUp() {
         password: z.string().min(6, 'password canot be less than 6'),
         matricNo: z.string().optional(),
     });
-
+      const [errors, setErrors] =  useState<{ [key: string]: string }>({});
     const handleSubmit = (e : FormEvent<HTMLFormElement> ) => {
         e.preventDefault();
         const form = e.target as HTMLFormElement;
@@ -27,6 +27,17 @@ export default function SignUp() {
         };
 
         console.log('Form data:', data);
+        const result = signUpSchema.safeParse(data);
+
+        if (!result.success) {
+            const fieldErrors: { [key: string]: string } = {};
+            result.error.errors.forEach(error => {
+                fieldErrors[error.path[0]] = error.message;
+            });
+            console.error('Validation errors:', fieldErrors);
+            return;
+            setErrors(fieldErrors);
+        }
 
         try {
             signUpSchema.parse(data);
@@ -59,6 +70,9 @@ export default function SignUp() {
                             <option value="student">Student</option>
                             <option value="lecturer">Lecturer</option>
                         </select>
+                        {errors.role && (
+                            <p className="text-red-500 text-sm mt-1">{errors.role}</p>
+                        )}
                     </div>
 
                     <div>
@@ -71,6 +85,9 @@ export default function SignUp() {
                             className="w-full px-3 py-2 border border-green-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
                             placeholder="Enter your email"
                         />
+                        {errors.email && (
+                            <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+                        )}
                     </div>
 
                     <div>
@@ -83,6 +100,10 @@ export default function SignUp() {
                             className="w-full px-3 py-2 border border-green-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
                             placeholder="Enter your password"
                         />
+
+                        {errors.password && (
+                            <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+                        )}
                     </div>
 
                     <div>
@@ -94,6 +115,9 @@ export default function SignUp() {
                             className="w-full px-3 py-2 border border-green-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
                             placeholder="Matric no"
                         />
+                        {errors.matricNo && (
+                            <p className="text-red-500 text-sm mt-1">{errors.matricNo}</p>
+                        )}
                     </div>
 
                     <div className="mb-4">

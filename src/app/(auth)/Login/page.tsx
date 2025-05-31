@@ -1,11 +1,11 @@
 "use client";
 import { useRouter } from 'next/navigation';
 import z from 'zod';
-import { FormEvent, } from 'react';
+import { FormEvent, useState } from 'react';
 
 const LoginSchema = z.object({
   email: z.string().email('Invalid email addresss').min(1, 'Email is required'),
-  password: z.string().min(6),
+  password: z.string().min(6, 'Password must be at least 6 characters long').max(20, 'Password cannot exceed 20 characters'),
 });
 
 type FormData = {
@@ -15,7 +15,7 @@ type FormData = {
 
 export default function SignIn() {
   const router = useRouter();
- 
+   const [errors, setErrors] = useState<{ email?: string; password?: string }>({});
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
@@ -24,10 +24,25 @@ export default function SignIn() {
       email: formData.get('email'),
       password: formData.get('password'),
     };
-
+  
     console.log('Form data:', data);
-    LoginSchema.parse(data);
-    
+    const result = LoginSchema.safeParse(data);
+
+    if(!result.success) {
+     const fieldErrors: { email?: string; password?: string } = {};
+     result.error.errors.forEach(error => {
+        if (error.path[0] === 'email') {
+          fieldErrors.email = error.message;
+        } else if (error.path[0] === 'password') {
+          fieldErrors.password = error.message;
+        }
+      });
+      setErrors(fieldErrors);
+      console.error('Validation errors:', fieldErrors);
+      return;
+    }
+
+  
     try {
        
       console.log('Form data is valid:', data);
@@ -60,6 +75,9 @@ export default function SignIn() {
               className="w-full px-3 py-2 border border-green-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="Enter your email"
             />
+            {errors.email && (
+              <p className="text-red-500 text-sm mt-1">{errors.email}</p>
+            )}
           </div>
 
           <div className="mb-4">
@@ -72,6 +90,9 @@ export default function SignIn() {
               className="w-full px-3 py-2 border border-green-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="Enter your password"
             />  
+            {errors.password && (
+              <p className="text-red-500 text-sm mt-1">{errors.password}</p>
+            )}
           </div>
        
           <button
