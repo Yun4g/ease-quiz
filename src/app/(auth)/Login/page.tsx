@@ -1,7 +1,7 @@
 "use client";
 import { useRouter } from 'next/navigation';
 import z from 'zod';
-import { FormEvent } from 'react';
+import { FormEvent, useState } from 'react';
 
 const LoginSchema = z.object({
   email: z.string().email('Invalid email addresss').min(1, 'Email is required'),
@@ -15,7 +15,7 @@ type FormData = {
 
 export default function SignIn() {
   const router = useRouter();
-   
+  const [errors, setErrors] = useState("") 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
@@ -26,9 +26,10 @@ export default function SignIn() {
     };
 
     console.log('Form data:', data);
+    const result = LoginSchema.parse(data);
     
     try {
-      LoginSchema.parse(data);
+       
       console.log('Form data is valid:', data);
       router.push('/Dashbord/studentDashboard');
     } catch (error) {
@@ -70,8 +71,8 @@ export default function SignIn() {
               required
               className="w-full px-3 py-2 border border-green-300 rounded focus:outline-none focus:ring-2 focus:ring-green-500"
               placeholder="Enter your password"
-            />
-          </div>
+            />  
+           </div>
        
           <button
             type="submit"
@@ -83,7 +84,7 @@ export default function SignIn() {
 
         <div className="mt-4 text-center">
           <p className="text-sm text-gray-600">
-            Dont have an account?{" "}
+            Dont have an account?
             <a href="/SignUp" className="text-green-600 hover:underline">Sign Up</a>
           </p>
         </div>

@@ -2,6 +2,7 @@
 import z from 'zod';
 
 
+
 export default function SignUp() {
     const signUpSchema = z.object({
         role: z.enum(['student', 'lecturer']),
@@ -10,7 +11,7 @@ export default function SignUp() {
         matricNo: z.string().optional(),
     });
 
-    const handleSubmit = (e) => {
+    const handleSubmit = (e : FormEvent<HTMLFormElement> ) => {
         e.preventDefault();
         const formData = new FormData(e.target);
 
