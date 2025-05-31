@@ -15,7 +15,7 @@ type FormData = {
 
 export default function SignIn() {
   const router = useRouter();
-  const [errors, setErrors] = useState("") 
+ 
   const handleSubmit = (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
@@ -26,7 +26,7 @@ export default function SignIn() {
     };
 
     console.log('Form data:', data);
-    const result = LoginSchema.parse(data);
+  
     
     try {
        
