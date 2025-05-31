@@ -5,12 +5,21 @@ import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 
 
+
+
 declare global {
   interface Window {
-    SpeechRecognition: typeof SpeechRecognition;
-    webkitSpeechRecognition: typeof SpeechRecognition;
+    webkitSpeechRecognition?: any;
+    SpeechRecognition?: any;
   }
 }
+type SpeechRecognitionEvent = Event & {
+  results: SpeechRecognitionResultList;
+};
+
+type SpeechRecognitionErrorEvent = Event & {
+  error: string;
+};
 
 interface Question {
   question: string;
@@ -49,10 +58,10 @@ export default function StudentQuiz() {
 
   const [isSpeechSupported, setIsSpeechSupported] = useState(false);
 
-  useEffect(() => {
-    const SpeechRecognition = window.SpeechRecognition || window.webkitSpeechRecognition;
-    setIsSpeechSupported(!SpeechRecognition);
-  }, []);
+useEffect(() => {
+  setIsSpeechSupported('SpeechRecognition' in window || 'webkitSpeechRecognition' in window);
+}, []);
+
 
   const handleChangeAnswer = (index: number, value: string) => {
     const newAnswers = [...studentAnswers];
@@ -93,7 +102,7 @@ export default function StudentQuiz() {
 
       setIsRecording(index);
 
-      recognition.onresult = (e) => {
+      recognition.onresult = (e: SpeechRecognitionEvent) => {
         const transcript = e.results[0][0].transcript;
         const newAnswers = [...studentAnswers];
         newAnswers[index] = transcript;
@@ -101,9 +110,9 @@ export default function StudentQuiz() {
         setIsRecording(null);
       };
 
-      recognition.onerror = (e) => {
+      recognition.onerror = (e: SpeechRecognitionErrorEvent) => {
         console.error("Speech recognition error:", e.error);
-        alert(`Error: ${event.error}`);
+        alert(`Error: ${e.error}`);
         setIsRecording(null);
       };
 
@@ -148,7 +157,7 @@ export default function StudentQuiz() {
     };
     console.log(result)
 
-     alert(score  + '' +  selectedCourse.questionData.length * 10 )
+    alert(score + '' + selectedCourse.questionData.length * 10)
 
     setTimeout(() => {
       router.push("/Dashbord/studentDashboard");
@@ -162,36 +171,36 @@ export default function StudentQuiz() {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(result),
-      
+
       });
 
       if (!res.ok) {
         throw new Error("Failed to submit result");
       }
 
-       alert(score  + '' +  selectedCourse.questionData.length * 10 )
+      alert(score + '' + selectedCourse.questionData.length * 10)
     } catch (error) {
       console.error("Submission error:", error);
-      
+
     }
   };
 
-      
+
 
   return (
     <section className={`min-h-screen bg-gray-50 py-10 px-4 sm:px-8 ${score ? 'overflow-hidden' : 'overflow-auto'} `}>
-        {score !== null && (
-         
-              <div className="mt-6 p-4 bg-green-100 rounded-lg text-xl font-bold text-green-700 animate-fade-in">
-                You scored {score}/{selectedCourse.questionData.length * 10}
-                <div className="mt-2 text-sm font-normal text-green-600">
-                  Redirecting to dashboard...
-                </div>
-              </div>
-            
+      {score !== null && (
 
-          )}
-      
+        <div className="mt-6 p-4 bg-green-100 rounded-lg text-xl font-bold text-green-700 animate-fade-in">
+          You scored {score}/{selectedCourse.questionData.length * 10}
+          <div className="mt-2 text-sm font-normal text-green-600">
+            Redirecting to dashboard...
+          </div>
+        </div>
+
+
+      )}
+
       <div className="max-w-4xl mx-auto">
         <header className="flex justify-between items-center mb-8">
           <h1 className="text-3xl md:text-4xl text-green-600 font-serif">EasyQUIZ</h1>
@@ -251,10 +260,10 @@ export default function StudentQuiz() {
                   onClick={() => handleAudioAnswer(index)}
                   disabled={isRecording !== null}
                   className={`flex items-center gap-2 px-4 py-2 rounded-lg text-sm font-semibold transition ${isRecording === index
-                      ? "bg-red-600 text-white animate-pulse"
-                      : isRecording !== null
-                        ? "bg-gray-400 text-gray-700 cursor-not-allowed"
-                        : "bg-green-700 hover:bg-green-800 text-white"
+                    ? "bg-red-600 text-white animate-pulse"
+                    : isRecording !== null
+                      ? "bg-gray-400 text-gray-700 cursor-not-allowed"
+                      : "bg-green-700 hover:bg-green-800 text-white"
                     }`}
                 >
                   {isRecording === index ? (
@@ -280,22 +289,22 @@ export default function StudentQuiz() {
             onClick={handleSubmit}
             disabled={!studentName || !studentMatNo || studentAnswers.some(a => !a)}
             className={`bg-green-700 text-white px-6 py-2 rounded-lg text-base font-semibold transition mt-4 ${!studentName || !studentMatNo || studentAnswers.some(a => !a)
-                ? "opacity-50 cursor-not-allowed"
-                : "hover:bg-green-800"
+              ? "opacity-50 cursor-not-allowed"
+              : "hover:bg-green-800"
               }`}
           >
             Submit Answers
           </button>
 
           {score !== null && (
-         
-              <div className="mt-6 p-4 bg-green-100 rounded-lg text-xl font-bold text-green-700 animate-fade-in">
-                You scored {score}/{selectedCourse.questionData.length * 10}
-                <div className="mt-2 text-sm font-normal text-green-600">
-                  Redirecting to dashboard...
-                </div>
+
+            <div className="mt-6 p-4 bg-green-100 rounded-lg text-xl font-bold text-green-700 animate-fade-in">
+              You scored {score}/{selectedCourse.questionData.length * 10}
+              <div className="mt-2 text-sm font-normal text-green-600">
+                Redirecting to dashboard...
               </div>
-            
+            </div>
+
 
           )}
         </section>
