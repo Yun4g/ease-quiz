@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import { useParams, useRouter } from "next/navigation";
 
 
 
@@ -32,35 +32,23 @@ interface Course {
   questionData: Question[];
 }
 
-const mockCourses: Course[] = [
-  {
-    courseTitle: "CSC 497",
-    coursesLevel: "400",
-    questionData: [
-      { question: "What is React?", answer: "A JavaScript library" },
-      { question: "What is JSX?", answer: "JavaScript XML" },
-      { question: "What is useState used for?", answer: "State management" },
-    ],
-  },
-];
+
+
+
 
 export default function StudentQuiz() {
-  const [selectedCourse] = useState<Course>(mockCourses[0]);
-  const [studentAnswers, setStudentAnswers] = useState<string[]>(
-    Array(selectedCourse.questionData.length).fill("")
-  );
+  const [selectedCourse, setSelectedCourse] = useState<Course | null>(null);
+  const [studentAnswers, setStudentAnswers] = useState<string[]>([]);
   const [studentName, setStudentName] = useState("");
   const [studentMatNo, setStudentMatNo] = useState("");
   const [score, setScore] = useState<number | null>(null);
   const [isRecording, setIsRecording] = useState<number | null>(null);
   const router = useRouter();
-
-
   const [isSpeechSupported, setIsSpeechSupported] = useState(false);
 
-useEffect(() => {
-  setIsSpeechSupported('SpeechRecognition' in window || 'webkitSpeechRecognition' in window);
-}, []);
+  useEffect(() => {
+    setIsSpeechSupported('SpeechRecognition' in window || 'webkitSpeechRecognition' in window);
+  }, []);
 
 
   const handleChangeAnswer = (index: number, value: string) => {
@@ -141,9 +129,14 @@ useEffect(() => {
   };
 
   const handleSubmit = async () => {
+    if (!selectedCourse) {
+      alert("No course selected!");
+      return;
+    }
+
     let correct = 0;
     selectedCourse.questionData.forEach((q, i) => {
-      if (q.answer.trim().toLowerCase() === studentAnswers[i].trim().toLowerCase()) {
+      if (q.answer.trim().toLowerCase() === studentAnswers[i]?.trim().toLowerCase()) {
         correct += 10;
       }
     });
@@ -155,37 +148,73 @@ useEffect(() => {
       course: selectedCourse.courseTitle,
       score: `${correct}`,
     };
-    console.log(result)
+    console.log(result);
 
-    alert(score + '' + selectedCourse.questionData.length * 10)
+    alert(score + '' + selectedCourse.questionData.length * 10);
 
     setTimeout(() => {
       router.push("/Dashbord/studentDashboard");
     }, 6000);
 
-
     try {
-      const res = await fetch("/api/save-result", {
+      const res = await fetch("/api/result", {
         method: "POST",
         headers: {
           "Content-Type": "application/json",
         },
         body: JSON.stringify(result),
-
       });
 
       if (!res.ok) {
         throw new Error("Failed to submit result");
       }
 
-      alert(score + '' + selectedCourse.questionData.length * 10)
+      alert(score + '' + selectedCourse.questionData.length * 10);
     } catch (error) {
       console.error("Submission error:", error);
-
     }
   };
 
+  const params = useParams();
+  const id = params.id;
+  console.log("Course ID:", id);
+  const fetchCourseQuestions = async (): Promise<Course[]> => {
 
+    try {
+      const response = await fetch(`/api/getCourse/${id}`);
+      if (!response.ok) {
+        throw new Error("Failed to fetch courses");
+      }
+      const data = await response.json();
+      console.log("Fetched courses:", data);
+
+      if (!data || Object.keys(data).length === 0) {
+        alert("No courses available. Please contact your lecturer.");
+        return [];
+      }
+
+      setSelectedCourse(data);
+      setStudentAnswers(Array(data.questionData.length).fill(""));
+      console.log("Fetched courses:", data);
+      return data;
+    } catch (error) {
+      console.error("Error fetching courses:", error);
+      return [];
+    }
+  }
+
+
+  useEffect(() => {
+    fetchCourseQuestions()
+  }, [id]);
+
+  if (!selectedCourse) {
+    return <div className=" flex justify-center items-center h-screen bg-slate-300">
+       
+       svg
+
+    </div>;
+  }
 
   return (
     <section className={`min-h-screen bg-gray-50 py-10 px-4 sm:px-8 ${score ? 'overflow-hidden' : 'overflow-auto'} `}>
@@ -233,7 +262,7 @@ useEffect(() => {
             />
           </div>
 
-          {selectedCourse.questionData.map((q, index) => (
+          {selectedCourse?.questionData.map((q, index) => (
             <div key={index} className="mb-6">
               <div className="flex items-center gap-2 mb-2">
                 <h3 className="text-lg font-medium text-green-800">

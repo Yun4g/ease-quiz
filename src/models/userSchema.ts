@@ -22,6 +22,11 @@ const userSchema = new mongoose.Schema({
     },
     disability : {
         type : String
+    },
+    role : {
+        type : String,
+        enum : ["student", "lecturer"],
+        required : true
     }
 
 })

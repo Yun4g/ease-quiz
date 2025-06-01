@@ -1,5 +1,6 @@
 'use client';
 import React, { useRef } from 'react';
+import { useEffect } from 'react';
 
 interface Column {
   label: string;
@@ -15,19 +16,31 @@ interface Student {
 
 function ManageResults() {
   const pdFref = useRef<HTMLDivElement>(null);
-
-  const StudentData = [
-    { studentName: 'David', StudentMatNo: 'u2021/5570168', course: 'csc 497', score: '50' },
-    { studentName: 'David', StudentMatNo: 'u2021/5570168', course: 'csc 497', score: '50' },
-    { studentName: 'David', StudentMatNo: 'u2021/5570168', course: 'csc 497', score: '50' }
-  ];
-
+  const [StudentData, setStudentData] = React.useState<Student[]>([]);
   const columns: Column[] = [
-    { label: 'student Name', key: 'studentName' },
-    { label: 'Mat-No', key: 'StudentMatNo' },
-    { label: 'course Title', key: 'course' },
-    { label: 'studentScore ', key: 'score' }
+    { label: 'Student Name', key: 'studentName' },
+    { label: 'Matric No', key: 'StudentMatNo' },
+    { label: 'Course', key: 'course' },
+    { label: 'Score', key: 'score' },
   ];
+
+  const fetchStudentData = async () => {
+    try {
+      const response = await fetch("/api/getResult")
+      if (!response.ok) {
+        throw new Error("Failed to fetch student data");
+        alert(" student data not found");
+      }
+      const data = await response.json();
+      setStudentData(data);
+    } catch (error) {
+      console.log(error)
+    }
+  }
+
+  useEffect(() => {
+    fetchStudentData()
+  }, [])
 
   const handleDownload = async () => {
     if (!pdFref.current) return;

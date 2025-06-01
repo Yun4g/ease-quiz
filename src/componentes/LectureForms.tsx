@@ -28,7 +28,7 @@ const [allCourses, setAllCourses] = useState<Course[]>([])
 
 
   
-  const handleSubmit = (e : React.FormEvent<HTMLFormElement>) => {
+  const handleSubmit = async (e : React.FormEvent<HTMLFormElement>) => {
       e.preventDefault()
 
       const newCourseQuestion = {
@@ -43,10 +43,23 @@ const [allCourses, setAllCourses] = useState<Course[]>([])
       setQuestions([{ question: "", answer: "" }])
 
          
-      
+        
+      const response = await fetch('/api/newCourses', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(newCourseQuestion),
+      });
 
-     
-       alert("Course details saved successfully!");
+      if (!response.ok) {
+        alert("Failed to save course. Please try again.");
+        return;
+      }
+      const data = await response.json();
+      console.log("Course saved successfully:", data);
+      alert("Course saved successfully!");
+
   }
 
   useEffect(() => {

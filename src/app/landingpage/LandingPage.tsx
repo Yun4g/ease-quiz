@@ -32,7 +32,7 @@ export default function LandingPage() {
             <header className=" absolute top-1 w-full">
                 <NavBar/>
             </header>
-            <h1 className=" text-3xl font-bold text-green-700"> Get Started On EasyQuiz </h1>
+            <h1 className=" text-xl md:text-3xl font-bold text-green-700"> Get Started On EasyQuiz </h1>
             <div className=" flex gap-3 cursor-pointer p-4">
                 <Link href="/SignUp">
               <button  className="bg-green-500 font-semibold   text-white h-14 w-32 rounded-xl nimate-pulse-scale"> Get Started </button>
