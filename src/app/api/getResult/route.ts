@@ -1,20 +1,19 @@
 import connectDB from "@/lib/mongoose";
-import {  NextResponse } from "next/server";
+import { NextResponse } from "next/server";
 
+export async function GET(): Promise<NextResponse> {
+  try {
+    await connectDB();
+    const ResultModel = (await import("@/models/resultSchema")).default;
+    const results = await ResultModel.find();
 
-
-
-export async function GET() {
-    try {
-     await connectDB();
-     const ResultModel = (await import("@/models/resultSchema")).default;
-     const results = await ResultModel.find();
-     return new NextResponse(JSON.stringify(results), { status: 200, headers: { "Content-Type": "application/json" } });
-
-        
-    } catch (error) {
-       return new NextResponse(JSON.stringify({ message: "Internal Server Error" }), { status: 500 }); 
-       console.log(error) 
-    } 
-       
+    return NextResponse.json(results, {
+      status: 200,
+    });
+  } catch (error) {
+    console.error("Error fetching results:", error);
+    return NextResponse.json({ message: "Internal Server Error" }, {
+      status: 500,
+    });
+  }
 }

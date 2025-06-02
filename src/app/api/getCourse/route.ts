@@ -14,12 +14,12 @@ export async function GET() {
         const CourseModel = (await import("../../../models/questionSchema")).default;
         const courses = await CourseModel.find();
 
-        return new NextResponse(JSON.stringify( courses), { status: 200, headers: { "Content-Type": "application/json" } });
+        return  NextResponse.json( courses, { status: 200, headers: { "Content-Type": "application/json" } });
 
         
     } catch (error) {
         console.error("Error fetching course:", error);
-        return new Response(JSON.stringify({ message: "Internal Server Error" }), { status: 500 });
+        return  NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
         
     }
 

@@ -12,19 +12,19 @@ export async function POST(request: NextRequest) {
     const { email, password } = await request.json();
 
     if (!email || !password) {
-      return new NextResponse(JSON.stringify({ message: "Email and password are required" }), { status: 400 });
+      return  NextResponse.json({ message: "Email and password are required" }, { status: 400 });
     }
    await connectDB();
 
   
     const user = await User.findOne({ email });
     if (!user) {
-      return new NextResponse(JSON.stringify({ message: "User not found" }), { status: 404 });
+      return  NextResponse.json({ message: "User not found" }, { status: 404 });
     }
 
     const isPasswordValid = await bcrypt.compare(password, user.password);
     if (!isPasswordValid) {
-      return new NextResponse(JSON.stringify({ message: "Invalid password" }), { status: 401 });
+      return  NextResponse.json({ message: "Invalid password" }, { status: 401 });
     }
 
      const tokenData = {
@@ -35,7 +35,7 @@ export async function POST(request: NextRequest) {
    
      const token =  jwt.sign(tokenData, process.env.JWT_SECRET!, { expiresIn: "1d" });
 
-     const res =  new NextResponse(JSON.stringify({ message: "Login successful", userId: user._id, role : user.role  }), { status: 200 });
+     const res =   NextResponse.json({ message: "Login successful", userId: user._id, role : user.role  }, { status: 200 });
   
     res.cookies.set("token", token, {
       httpOnly: true,
@@ -45,6 +45,6 @@ export async function POST(request: NextRequest) {
 
   } catch (error) {
     console.error("Error during login:", error);
-    return new NextResponse(JSON.stringify({ message: "Internal Server Error" }), { status: 500 });
+    return  NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }

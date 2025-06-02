@@ -1,4 +1,4 @@
-import { NextRequest } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 
 
 
@@ -18,10 +18,10 @@ export async function POST(request: NextRequest) {
         });
         await newResult.save();
 
-        return new Response(JSON.stringify({ message: "Result saved successfully" }), { status: 201, headers: { "Content-Type": "application/json" } })
+        return NextResponse.json({ message: "Result saved successfully" }, { status: 201, headers: { "Content-Type": "application/json" } })
     } catch (error) {
         console.error("Error processing result:", error);
-        return new Response(JSON.stringify({ message: "Internal Server Error" }), { status: 500 });
+        return  NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
 
     }
 } 

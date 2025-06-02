@@ -1,10 +1,10 @@
-import connectDB from "@/lib/mongoose";
 import { NextRequest, NextResponse } from "next/server";
+import connectDB from "@/lib/mongoose";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: Record<string, string> }
-) {
+  { params }: { params: { id: string } }
+): Promise<NextResponse> {
   const { id } = params;
 
   try {
@@ -13,20 +13,12 @@ export async function GET(
     const course = await CourseModel.findById(id);
 
     if (!course) {
-      return new NextResponse(JSON.stringify({ message: "Course not found" }), {
-        status: 404,
-      });
+      return NextResponse.json({ message: "Course not found" }, { status: 404 });
     }
 
-    return new NextResponse(JSON.stringify(course), {
-      status: 200,
-      headers: { "Content-Type": "application/json" },
-    });
+    return NextResponse.json(course, { status: 200 });
   } catch (error) {
     console.error("Error fetching course:", error);
-    return new NextResponse(
-      JSON.stringify({ message: "Internal Server Error" }),
-      { status: 500 }
-    );
+    return NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
   }
 }

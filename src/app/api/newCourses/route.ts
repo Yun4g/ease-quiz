@@ -11,7 +11,7 @@ export async function POST(req : NextRequest) {
         await connectDB()
         const { courseTitle, coursesLevel, questionData} = await req.json()
         if (!courseTitle || !coursesLevel || !questionData || questionData.length === 0) {
-            return new NextResponse(JSON.stringify({message : "All fields are required"}), {status : 400})
+            return NextResponse.json({message : "All fields are required"}, {status : 400})
         }
 
         const CourseModel = (await import("@/models/questionSchema")).default;
@@ -22,12 +22,12 @@ export async function POST(req : NextRequest) {
         });
         await newCourse.save();
 
-        return new NextResponse(JSON.stringify({message : "Course created successfully"}), {status : 201})
+        return  NextResponse.json({message : "Course created successfully"}, {status : 201})
 
 
         
     } catch (error) {
-        return new NextResponse(JSON.stringify({message : "server error"}), {status : 500})
+        return  NextResponse.json({message : "server error"}, {status : 500})
         console.log(error)
         
     }

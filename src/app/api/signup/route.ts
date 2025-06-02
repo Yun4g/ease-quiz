@@ -12,7 +12,7 @@ export async function POST(req: NextRequest) {
 
        const ExistingUser = await User.findOne({email});
        if (ExistingUser) {
-           return new NextResponse(JSON.stringify({ message: "User already exists " }), { status: 400 });
+           return  NextResponse.json({ message: "User already exists " }, { status: 400 });
        }
 
        const hashedPassword = await bcrypt.hash(password, 10);
@@ -26,12 +26,12 @@ export async function POST(req: NextRequest) {
          });
 
           await newUser.save();
-          return new NextResponse(JSON.stringify({ message: "User created successfully" }), { status: 201 });
+          return  NextResponse.json({ message: "User created successfully" }, { status: 201 });
     
 
     } catch (error) {
         console.error("Error creating user:", error);
-        return new NextResponse(JSON.stringify({ message: "Internal Server Error" }), { status: 500 });
+        return  NextResponse.json({ message: "Internal Server Error" }, { status: 500 });
     }
 
 }
