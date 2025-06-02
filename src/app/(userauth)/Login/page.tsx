@@ -21,9 +21,6 @@ export default function SignIn() {
   const [showPassword, setShowPassword] = useState(false);
   const [isLoading, setIsLoading] = useState(false);
 
-
-
-
   const handleSubmit = async (e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     const formData = new FormData(e.currentTarget as HTMLFormElement);
@@ -45,9 +42,7 @@ export default function SignIn() {
       return;
     }
 
-
     try {
-      LoginSchema.parse(data);
       setIsLoading(true);
       setErrors({});
 
@@ -60,38 +55,32 @@ export default function SignIn() {
           email: data.email,
           password: data.password,
         }),
-      })
-      if (!response.ok) {
-        const errorData = await response.json();
-        throw new Error(errorData.message || 'Login failed');
-       
+      });
 
-      }
       const responseData = await response.json();
+
+      if (!response.ok) {
+        setErrors({ message: responseData.message || 'Login failed' });
+        setIsLoading(false);
+        return;
+      }
+
       console.log('Login successful:', responseData);
+
+     
+      localStorage.setItem('userId', responseData.userId);
+      localStorage.setItem('role', responseData.role);
 
       if (responseData.role === 'student') {
         router.push('/Dashbord/studentDashboard');
-        localStorage.setItem('userId', responseData.userId);
-        localStorage.setItem('role', responseData.role);
       } else if (responseData.role === 'lecturer') {
         router.push('/Dashbord/lecturerDashbord');
-        localStorage.setItem('userId', responseData.userId);
-        localStorage.setItem('role', responseData.role);
       }
 
     } catch (error) {
       setIsLoading(false);
-      if (error instanceof Error) {
-        if (error.message.includes('Invalid email address')) {
-          setErrors({ email: 'Invalid email address' });
-        } else if (error.message.includes('Password must be at least 6 characters long')) {
-          setErrors({ password: 'Password must be at least 6 characters long' });
-        } else {
-          console.error('Login error:', error.message);
-        }
-      }
-      console.error('Validation errors:', error);
+      console.error('Login error:', error);
+      setErrors({ message: 'An unexpected error occurred. Please try again.' });
     }
   };
 
@@ -106,23 +95,22 @@ export default function SignIn() {
       }}
     >
       <div className="bg-white border border-green-500 p-6 sm:p-8 rounded-lg shadow-md shadow-green-400 w-full max-w-[90%] sm:max-w-md">
-        {
-          isLoading && (
-            <div className="flex items-center justify-center mb-4">
-              <svg className="animate-spin h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
-                <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
-                <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2.93 6.364A8.001 8.001 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3.93-1.574zM12 20a8.001 8.001 0 01-6.364-2.93l-3.93 1.574A11.95 11.95 0 0012 24v-4zm6.364-2.93A8.001 8.001 0 0120 12h4c0 3.042-1.135 5.824-3 7.938l-3.636-1.568zM20 12a8.001 8.001 0 01-2.93-6.364l3.636-1.568A11.95 11.95 0 0024 12h-4z"></path>
-              </svg>
-            </div>
-          )
-        }
-        {
-          errors && (
-            <p className="text-red-500 text-sm mb-4 text-center">
-              {errors.email || errors.password}
-            </p>
-          )
-        }
+        {isLoading && (
+          <div className="flex items-center justify-center mb-4">
+            <svg className="animate-spin h-5 w-5 text-green-600" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+              <circle className="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" strokeWidth="4"></circle>
+              <path className="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2.93 6.364A8.001 8.001 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3.93-1.574zM12 20a8.001 8.001 0 01-6.364-2.93l-3.93 1.574A11.95 11.95 0 0012 24v-4zm6.364-2.93A8.001 8.001 0 0120 12h4c0 3.042-1.135 5.824-3 7.938l-3.636-1.568zM20 12a8.001 8.001 0 01-2.93-6.364l3.636-1.568A11.95 11.95 0 0024 12h-4z"></path>
+            </svg>
+          </div>
+        )}
+        
+       
+        {errors.message && (
+          <p className="text-red-500 text-sm mb-4 text-center">
+            {errors.message}
+          </p>
+        )}
+        
         <h2 className="text-2xl font-bold mb-6 text-center">Login</h2>
         <form onSubmit={handleSubmit}>
           <div className="mb-4">
@@ -166,7 +154,8 @@ export default function SignIn() {
 
           <button
             type="submit"
-            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition duration-200"
+            disabled={isLoading}
+            className="w-full bg-green-600 text-white py-2 rounded hover:bg-green-700 transition duration-200 disabled:opacity-50"
           >
             {isLoading ? 'Validating account' : 'Sign In'}
           </button>
