@@ -3,9 +3,9 @@ import connectDB from "@/lib/mongoose";
 
 export async function GET(
   request: NextRequest,
-  { params }: { params: { id: string } }
-): Promise<NextResponse> {
-  const { id } = params;
+  context: { params: { id: string } }
+) {
+  const { id } = context.params;
 
   try {
     await connectDB();
