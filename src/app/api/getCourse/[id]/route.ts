@@ -1,9 +1,12 @@
 import { NextRequest, NextResponse } from "next/server";
 import connectDB from "@/lib/mongoose";
 
+
+type Params = { params: { id: string } };
+
 export async function GET(
   request: NextRequest,
-  context: { params: { id: string } }
+  context: Params
 ) {
   const { id } = context.params;
 
