@@ -271,11 +271,11 @@ export default function StudentQuiz() {
                 </h3>
                 <button
                   onClick={() => speakQuestion(q.question)}
-                  className="p-1 rounded-full bg-gray-200 hover:bg-gray-300 transition"
+                  className="p-1 rounded-full bg-gray-200  text-green-600 hover:bg-gray-300 transition"
                   aria-label="Listen to question"
                   title="Listen to question"
                 >
-                  🔊
+                  🔊click to listen
                 </button>
               </div>
               <textarea
@@ -283,7 +283,7 @@ export default function StudentQuiz() {
                 placeholder="Your Answer"
                 value={studentAnswers[index]}
                 onChange={(e) => handleChangeAnswer(index, e.target.value)}
-                required
+                requiredp
               />
               <div className="flex gap-4 mt-2">
                 <button
