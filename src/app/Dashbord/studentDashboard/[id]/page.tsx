@@ -294,7 +294,7 @@ export default function StudentQuiz() {
                 placeholder="Your Answer"
                 value={studentAnswers[index]}
                 onChange={(e) => handleChangeAnswer(index, e.target.value)}
-                requiredp
+                required
               />
               <div className="flex gap-4 mt-2">
                 <button
