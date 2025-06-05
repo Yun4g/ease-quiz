@@ -207,6 +207,15 @@ export default function StudentQuiz() {
   useEffect(() => {
     fetchCourseQuestions()
   }, [id]);
+  
+
+  
+      useEffect(()=>{
+           const token = localStorage.get('token')
+           if (!token) {
+               router.push('/login')
+           }
+      },[])
 
   if (!selectedCourse) {
     return <div className=" flex justify-center items-center h-screen bg-slate-300">
@@ -216,6 +225,8 @@ export default function StudentQuiz() {
               </svg>
     </div>;
   }
+
+  
 
   return (
     <section className={`min-h-screen bg-gray-50 py-10 px-4 sm:px-8 ${score ? 'overflow-hidden' : 'overflow-auto'} `}>
