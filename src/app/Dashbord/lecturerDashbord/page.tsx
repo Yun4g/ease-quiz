@@ -3,6 +3,7 @@
 export const dynamic = 'force-dynamic';
 
 import useComponentStore from "@/app/store/ComponentIDStore";
+import AuthCheck from "@/componentes/AuthCheck";
 import LecturerForms from "@/componentes/LectureForms";
 import ManageResults from "@/componentes/manageResults";
 import { useRouter } from "next/router";
@@ -21,6 +22,7 @@ export default function LecturerDashBoard() {
     },[])
 
     return (
+        <AuthCheck>
         <div className="px-3 h-full pt-4 w-full">
             {
                 ComponentPage === "Form" ? (
@@ -34,5 +36,6 @@ export default function LecturerDashBoard() {
                 )
             }
         </div>
+        </AuthCheck>
     );
 }

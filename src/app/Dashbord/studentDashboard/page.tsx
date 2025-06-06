@@ -1,8 +1,10 @@
 "use client"
 
+import AuthCheck from "@/componentes/AuthCheck";
 import Image from "next/image";
 import Link from "next/link";
 import { useEffect, useState } from "react";
+
 
 
 interface Course {
@@ -50,6 +52,7 @@ export default function StudentDashBoard() {
 
 
   return (
+    <AuthCheck>
     <section className="min-h-screen w-full bg-slate-100 p-4">
       <div className="max-w-7xl mx-auto">
         
@@ -113,5 +116,6 @@ export default function StudentDashBoard() {
         </section>
       </div>
     </section>
+    </AuthCheck>
   );
 }
