@@ -13,7 +13,8 @@ export default function LecturerDashBoard() {
     const router = useRouter()
 
     useEffect(()=>{
-         const token = localStorage.get('token')
+         const token = localStorage.getItem('token')
+         console.log("Token:", token);
          if (!token) {
              router.push('/login')
          }

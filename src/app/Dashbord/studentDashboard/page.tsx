@@ -42,6 +42,12 @@ export default function StudentDashBoard() {
     handleFetchCourses();
   }, []);
 
+   const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    window.location.href = "/Login"; // Redirect to login page
+  }
+
 
   return (
     <section className="min-h-screen w-full bg-slate-100 p-4">
@@ -49,9 +55,9 @@ export default function StudentDashBoard() {
         
         <header className="flex justify-between items-center mb-8">
           <h1 className="text-3xl md:text-4xl text-green-600 font-serif">EasyQUIZ</h1>
-          <Link href={'/Login'} className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg transition duration-300 text-sm md:text-base">
+          <button onClick={handleLogout} className="bg-green-600 hover:bg-green-700 text-white px-5 py-2 rounded-lg transition duration-300 text-sm md:text-base">
             Logout
-          </Link>
+          </button>
         </header>
 
         

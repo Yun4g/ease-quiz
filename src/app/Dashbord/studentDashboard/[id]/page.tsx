@@ -211,7 +211,7 @@ export default function StudentQuiz() {
 
   
       useEffect(()=>{
-           const token = localStorage.get('token')
+           const token = localStorage.getItem('token')
            if (!token) {
                router.push('/login')
            }

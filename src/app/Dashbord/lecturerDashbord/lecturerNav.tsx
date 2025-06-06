@@ -15,6 +15,12 @@ function LectureNavBar() {
     DisplayManageQuestion();
   };
 
+  const handleLogout = () => {
+    localStorage.removeItem("token");
+    localStorage.removeItem("role");
+    window.location.href = "/Login"; // Redirect to login page
+  }
+
   return (
     <nav className="bg-gray-800 border-2 border-green-500 rounded-2xl p-3 sm:p-4 w-full max-w-xl mx-auto">
       <div className="flex flex-col sm:flex-row items-center justify-center gap-3 sm:gap-8 text-center">
@@ -35,9 +41,9 @@ function LectureNavBar() {
         >
           Manage Student Result
         </p>
-         <Link href="/Login" className="bg-green-600 hover:bg-green-700 m-3 text-white px-5 py-2 rounded-lg transition duration-300 text-sm md:text-base">
+         <button onClick={handleLogout} className="bg-green-600 hover:bg-green-700 m-3 text-white px-5 py-2 rounded-lg transition duration-300 text-sm md:text-base">
             Logout
-       </Link>
+       </button>
       </div>
        
       <div className="mt-4 mb-2 text-center">

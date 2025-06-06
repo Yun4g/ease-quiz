@@ -68,6 +68,7 @@ export default function SignIn() {
       console.log('Login successful:', responseData);
     
       localStorage.setItem('token', responseData.token);
+      console.log('Token stored in localStorage:', responseData.token);
       localStorage.setItem('role', responseData.role);
 
       if (responseData.role === 'student') {
